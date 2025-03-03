@@ -11,12 +11,12 @@ class WaterTracker extends StatefulWidget {
 
 class _WaterTrackerState extends State<WaterTracker> {
   int _currentIntake = 0;
-  double _targetIntake = 2000; // target daily intake in milliliters
+  final int _targetIntake = 2000; // target daily intake in milliliters
 
   void _addWater(int amount) {
     setState(() {
       if (_currentIntake < _targetIntake) {
-        _currentIntake += amount;
+        _currentIntake = (_currentIntake + amount).clamp(0, _targetIntake);
       }
     });
   }
@@ -29,6 +29,7 @@ class _WaterTrackerState extends State<WaterTracker> {
 
   @override
   Widget build(BuildContext context) {
+    int _progress = ((_currentIntake / _targetIntake) * 100).toInt();
     return Scaffold(
       backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
@@ -84,14 +85,15 @@ class _WaterTrackerState extends State<WaterTracker> {
                   height: 150,
                   width: 150,
                   child: CircularProgressIndicator(
-                    value: 0.75, // replace with actual progress value
+                    value:
+                        _progress / 100, // replace with actual progress value
                     backgroundColor: Colors.white,
                     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
                     strokeWidth: 10,
                   ),
                 ),
                 Text(
-                  '75%',
+                  '${_progress}%',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               ],
